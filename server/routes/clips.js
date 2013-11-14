@@ -224,9 +224,17 @@ exports.addexistingclip = function(req, res) {
 }
 
 exports.getpopularclips = function(req, res) {
-    
+
 }
 
 exports.getrecentclips = function(req, res) {
-
+    MongoClient.connect(config.MONGO_URL, function(err, db) {
+        var clipscollection = db.collection('clips');
+        clipscollection.find().sort({_id : -1}).limit(10).toArray(function(err, clips){
+            if(err) {
+                res.send([]);
+            }
+            res.send(clips);
+        });
+    });
 }
