@@ -7,26 +7,30 @@ exports.getclips = function(req, res) {
 		if(err) throw err;
         var usercollection = db.collection('users');
 		
-        var userid = req.body.userid
+        var userid = req.query.userid;
+        console.log(userid);
 
-        user.collection.findOne({userid: userid}, function(err, user) {
+        usercollection.findOne({userid: userid}, function(err, user) {
             if (user == null) {
                 db.close();
+                res.render('index', {title : 'no results'});
             } else {
-                var clipIds = user.clips;
-                if (clipIds == null || clipIds.length == 0) {
+                var clipids = user.clipids;
+                if (clipids == null || clipids.length == 0) {
                     res.render('index', {title : "00" });
                 }
                 var count = 0;
                 var results = [];
-                for (var i = 0; i < clipIds.length; i++) {
+                for (var i = 0; i < clipids.length; i++) {
                     var clipscollection = db.collection('clips');
-                    clipscollection.findOne({clipid: clipIds[i]}, function(clipContent) {
-                        count ++;
+                    var clipid = clipids[i].toString();
+                    clipscollection.findOne({clipid: clipid}, function(err, clipContent) {
+                        count++;
                         results.push(clipContent);
-                        if (count == clipIds.length) {
+                        if (count == clipids.length) {
                             db.close();
-                            res.render('index', {title : results});
+                            //res.render('index', {title : results});
+                            res.send(results);
                         };
                     });
                 }
