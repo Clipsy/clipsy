@@ -74,7 +74,7 @@ img.center{
 		}).done(function(data){
 				for(var i in data){
 					console.log(data);
-					fetch(data[i], function(clipdata) {push(data[i],'userItems', clipdata);});
+					fetch(data[i], function(clipdata) {push(data[i],'userItems', clipdata, false);});
 				}
 			}
 		);
@@ -88,7 +88,23 @@ img.center{
 		});
 	}
 	
-	function push(itemId,stackId,data){
+	function addexistingclip(itemid) {
+		$.ajax(
+		{
+			type:"POST",
+			url:serverroot+"/addclip",
+			data: {
+				itemid: itemid
+			},
+			success : function(data) {
+				$("#" + itemid+"-button").text("Added");
+				$("#" + itemid+"-button").removeClass("btn-primary");
+				$("#" + itemid+"-button").addClass("btn-success");
+			} 
+		})
+	}
+
+	function push(itemId,stackId,data, shouldadd){
 		
 		var elem=$('<div>');
 		elem.attr('id',itemId);
@@ -106,6 +122,20 @@ img.center{
 		imaged.append(image);
 		elem.append(imaged);
 
+		var caption = $('<div>');
+		caption.addClass("caption");
+		caption.text("This is the new shit");
+		elem.append(caption);
+
+		if (shouldadd) {
+			var button = $('<button>');
+			button.addClass('btn');
+			button.addClass('btn-primary');
+			button.text("+ Add Clip");
+			button.attr("id", itemId+"-button");
+			elem.append(button);
+			button.click(function(){ addexistingclip(itemId); });
+		}
 		$(stackId).prepend(elem);
 	}
 
