@@ -9,8 +9,36 @@ chrome.runtime.onMessage.addListener(
       	if(request.action == 'END_ROI_MODE') {
       		endROICaptureMode();
       	}
+
+      	if(request.action == 'START_DIV_SELECTOR') {
+      		startDivSelectorMode();
+      	}
+
+      	if(request.action == 'END_DIV_SELECTOR') {
+      		endDivSelectorMode();
+      	}
  	}
 });
+
+/* DIV selector mode */
+var myDomOutline;
+
+function handleDivSelected(element){
+	console.log("Clicked element", element);
+};
+
+function startDivSelectorMode(){
+	console.log("Starting Div selector...");
+	var myDomOutline = new DomOutline({ onClick: handleDivSelected });
+    myDomOutline.start();
+};
+
+function stopDivSelectorMode(){
+	console.log("Stopping DIV selector...");
+	myDomOutline.stop();
+};
+
+/* Rectangle ROI Mode */
 
 var mousedown;
 var startPos;
@@ -105,8 +133,9 @@ function confirmROIRectangle(curPos){
 	// highlight ROI rectangle and ask for confirmation
 	console.log("Highlighting ROI...");
 	var bty = curPos.y - 21;
-	var btx1 = curPos.x - 115;
-	var btx2 = curPos.x - 53;
+	var btx1 = curPos.x - 177;
+	var btx2 = curPos.x - 115;
+	var btx3 = curPos.x - 53;
 	$('#clipsy-roi-selector')
 		.css("border","solid 2px #285e8e")
 		.after(
@@ -126,8 +155,19 @@ function confirmROIRectangle(curPos){
 				.attr('id', 'clipsy-roi-no')
 				.addClass('clipsy-roi-confirm-btn')
 				.attr("style", "color:black; z-index: 1002; opactiy: 1.0;position: absolute; top: " + bty + "px; left:" + btx2 + "px")
-				.text('Cancel')
+				.text('Redraw')
 				.click(undrawROIRectangle)
+		)
+		.after(
+			$('<button>')
+				.attr('id', 'clipsy-roi-quit')
+				.addClass('clipsy-roi-confirm-btn')
+				.attr("style", "color:black; z-index: 1002; opactiy: 1.0;position: absolute; top: " + bty + "px; left:" + btx3 + "px")
+				.text('Quit')
+				.click(function(){
+					undrawROIRectangle();
+					endROICaptureMode();
+				})
 		);
 };
 
