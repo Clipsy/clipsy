@@ -30,6 +30,9 @@ if ('development' == app.get('env')) {
 
 app.get('/getclips', clips.getclips);
 app.get('/getclip', clips.getclip);
+app.get('/getcachedclip', clips.getcachedclip);
+app.get('/getrecentclips', clips.getrecentclips);
+app.post('/addexistingclip', clips.addexistingclip);
 app.post('/addclip', clips.addclip);
 app.post('/adduser', users.adduser);
 
