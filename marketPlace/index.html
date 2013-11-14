@@ -67,12 +67,13 @@ img.center{
 
 
 <script type="text/javascript">
-	var serverroot="";
+	var serverroot="http://localhost:3000";
 	var userid="";
 	$.ajax({
 			url: serverroot+"/getclips?userid="+userid
 		}).done(function(data){
 				for(var i in data){
+					console.log(data);
 					fetch(data[i], function(clipdata) {push(data[i],'userItems', clipdata);});
 				}
 			}
