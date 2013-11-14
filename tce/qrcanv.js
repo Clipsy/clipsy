@@ -702,32 +702,21 @@ function genframe(instring)
 }
 
 var wd, ht, qrc;
-function setupqr(){
-//    window.scrollTo(0,1)
-    wd = window.innerWidth-10;
-    ht = window.innerHeight-10;
-    mp = document.getElementById("mapcanv");
-
-    qrd = document.getElementById("qrdiv");
-    qrd.style.width = wd + "px";
-    qrd.style.height = ht + "px";
-
-    wd -= 4;
-    ht -= 80;
-
-    var elem = document.getElementById('qrcanv');
+function setupqr(id,wdt,hgt){
+    wd=wdt;
+    ht=hgt;
+    var elem = document.getElementById(id);
     qrc = elem.getContext('2d');
-    qrc.canvas.width = wd;
-    qrc.canvas.height = ht;
+    qrc.canvas.width = wdt;
+    qrc.canvas.height = hgt;
     qrc.fillStyle = '#eee';
-    qrc.fillRect(0,0,wd,ht);
-
+    qrc.fillRect(0,0,wdt,hgt);
 }
 
-function doqr() {
+function doqr(str) {
     d = document;
-    ecclevel = d.qrinp.ECC.value;
-    qf = genframe(d.qrinp.qrinput.value);
+    ecclevel = 1;
+    qf = genframe(str);
     qrc.lineWidth=1;
 
     var i,j;
