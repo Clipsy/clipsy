@@ -25,7 +25,7 @@ exports.adduser = function(req, res) {
 		var collection = db.collection('users');
         createId(collection, function(userid){
         	db.close();
-        	res.render('index', { title: userid });
+        	res.send(userid);
         });
 	});
 };
