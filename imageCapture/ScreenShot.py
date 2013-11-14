@@ -5,11 +5,16 @@ from flask import Flask, Response, jsonify,request
 from capture import Screenshot
 from subprocess import call
 import hashlib
+import urllib
 
 app=Flask(__name__)
 
 
-s=Screenshot()
+
+users={}
+root='0.0.0.0:3000'
+
+
 
 @app.route('/image', methods=['GET','POST'])
 def getPicture():
@@ -26,7 +31,6 @@ def getPicture():
     return filename
 
 
- 
 @app.route('/')
 def api_root():
     return 'Welcome'

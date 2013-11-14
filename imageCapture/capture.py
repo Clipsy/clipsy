@@ -2,7 +2,7 @@ import sys
 import time
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
+from PyQt4.QtWebKit import  *
 import Image
 from flask import Flask, Response, jsonify,request
 app=Flask(__name__)
@@ -43,8 +43,10 @@ class Screenshot(QWebView):
         self._loaded = True
 
 
-s=Screenshot()
+
+
 def makePicture(url,screenWidth,top,left,width,height,output):
+    s=Screenshot()
     screenWidth=int(screenWidth)
     top=int(top)
     left=int(left)
