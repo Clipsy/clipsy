@@ -6,9 +6,7 @@ exports.getclips = function(req, res) {
   	MongoClient.connect(config.MONGO_URL, function(err, db) {
 		if(err) throw err;
         var usercollection = db.collection('users');
-		
         var userid = req.query.userid;
-        console.log(userid);
 
         usercollection.findOne({userid: userid}, function(err, user) {
             if (err || user == null) {
@@ -40,15 +38,15 @@ exports.getclips = function(req, res) {
 };
 
 var createClipId = function(collection, url, coords, callback) {
-    var clipid = Math.round(Math.random() * 100000000);
+    var clipid = Math.round(Math.random() * 100000000).toString();
     collection.findOne({clipid: clipid}, function(clip) {
-         if (user == null) {
-            collection.save({clipid: userid, url: url, coords : coords}, function(err, count){
+         if (clip == null) {
+            collection.save({clipid: clipid, url: url, coords : coords}, function(err, count){
                 if(!err) {
                     console.log('ClipId: ' + clipid + 'saved successfully');
                     callback(clipid);
                 } else {
-                    // do something
+                	callback(null);
                 }
             });
          } else {
@@ -57,44 +55,53 @@ var createClipId = function(collection, url, coords, callback) {
     });
 }
 
-exports.addClip = function(req, res) {
+exports.addclip = function(req, res) {
     var userid = req.body.userid;
     var url = req.body.url;
     var coords = req.body.coords;
+
     MongoClient.connect(config.MONGO_URL, function(err, db) {
         if (err) {
             db.close();
             throw err;
         }
         var usercollection = db.collection('users');
-        usercollection.collection.findOne({userid: userid}, function(err, user) {
+        usercollection.findOne({userid: userid}, function(err, user) {
             if (err || user == null) {
                 // do something bro
                 db.close();
+                res.render('index', { title: 'User not found' });
             } else {
                 var clipids = user.clipids;
-                if (url != null && url != undefined && url != "" && coords != undefined && coords != null) {
+                if (url != null &&  url != "" && coords != null) {
                     var found = true;
                     var clipCollection = db.collection('clips');
                     createClipId(clipCollection, url, coords, function(clipid) {
+                    	if (clipid == null) {
+                    		db.close();
+                    		res.render('index', { title: 'Clip not generated' });
+                    	}
                         clipids.push(clipid);
                         usercollection.update({userid: userid}, {$set: {clipids: clipids}}, function(err, result) {
                             if (err) {
                                 db.close();
-                                // do something
+                                res.render('index', { title: 'Clip not added to collection.' });
                             } else {
                                 db.close();
-                                res.render('index', { title: userid });
+                                //res.render('index', { title: userid });
+                                res.send(clipids);
                             }
                         });
                         
                     });
                 } else {
                     db.close();
+                    res.render('index', { title: 'Invalid query params found.' });
                 }
             }
         });
     });
+}
 
 exports.getclip = function(req, res) {
 	MongoClient.connect(config.MONGO_URL, function(err, db) {

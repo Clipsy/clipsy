@@ -30,7 +30,7 @@ if ('development' == app.get('env')) {
 
 app.get('/getclips', clips.getclips);
 app.get('/getclip', clips.getclip);
-//app.post('/addclip', clips.addclip);
+app.post('/addclip', clips.addclip);
 app.post('/adduser', users.adduser);
 
 http.createServer(app).listen(app.get('port'), function(){
