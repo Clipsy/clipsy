@@ -3,7 +3,6 @@
  */
 
 var express = require('express');
-var routes = require('./routes');
 var users = require('./routes/users');
 var clips = require('./routes/clips');
 var http = require('http');
@@ -28,13 +27,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
-/*
+
 app.get('/getclips', clips.getclips);
 app.get('/getclip', clips.getclip);
-app.post('/addclip', clips.addclip);
-*/
+//app.post('/addclip', clips.addclip);
 app.post('/adduser', users.adduser);
-
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -1,27 +1,9 @@
-var MongoClient = require('mongodb').MongoClient
-var config = require('../config')
+var MongoClient = require('mongodb').MongoClient;
+var config = require('../config');
 
-/*
-var createId = function(collection, callback){
-	var userid = Math.round(Math.random() * 100000000);
-	collection.find({userid: userid}, function(err, results) {
-         if (!err && results.length == 0) {
-         	collection.save({userid: userid}, function(err, count){
-         		if(!err) {
-         			console.log('Userid: ' + userid + 'saved successfully');
-         			callback(userid);
-         		}
-         	});
-         } else {
-         	console.log(results.length);
-         	createId(collection, callback);
-         }
-                
-	});
-}*/
 
 exports.getclips = function(req, res) {
-  	MongoClient.connect('config.MONGO_URL', function(err, db) {
+  	MongoClient.connect(config.MONGO_URL, function(err, db) {
 		if(err) throw err;
         var usercollection = db.collection('users');
 		
@@ -53,7 +35,16 @@ exports.getclips = function(req, res) {
 	});
 };
 
-exports.getclipdata = function(req, res) {
-    
+exports.getclip = function(req, res) {
+	MongoClient.connect(config.MONGO_URL, function(err, db) {
+		if(err)	throw err;
+		var clipid = req.query.clipid;
+		/*
+			Get image from Nikhil's api.
+			Assume that the images are saved as <random_id>.png
+		*/
+		var imageFile = "12311133.png";
+		db.close();
+		res.send({clipid: clipid, url : config.IMAGE_BASE_URL + "/" + imageFile});
+	});
 }
-
