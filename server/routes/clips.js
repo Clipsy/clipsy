@@ -178,10 +178,49 @@ exports.getclip = function(req, res) {
     });
 }
 
+exports.getcachedclip = function(req, res) {
+    MongoClient.connect(config.MONGO_URL, function(err, db) {
+        if(err) throw err;
+        var clipid = req.query.clipid;
+        var clipCollection = db.collection('clips');
+        clipCollection.findOne({clipid: clipid}, function(err, clipData){
+            if(err) {
+                db.close();
+                res.status(400);
+                res.send();
+            } else {
+                db.close();
+                res.send(clipData);
+            }
+        });
+    });
+}
+
 exports.addexistingclip = function(req, res) {
 	var clipid = req.body.clipid;
 	var userid = req.body.userid;
-
+    MongoClient.connect(config.MONGO_URL, function(err, db) {
+        var usercollection = db.collection('users');
+        usercollection.findOne({userid: userid}, function(err, user) {
+            if (err || user == null) {
+                // do something bro
+                db.close();
+                res.render('index', { title: 'User not found' });
+            } else {
+                var clipids = user.clipids;
+                clipids.push(clipid);
+                usercollection.update({userid: userid}, {$set: {clipids: clipids}}, function(err, result) {
+                    db.close();
+                    if (err) {
+                        res.render('index', { title: 'Clip not added to collection.' });
+                    } else {
+                        console.log('Clip successfully added to user.');
+                        res.render('index', { title: 'Clip added to collection.' });
+                    }
+                });
+            }
+        });
+    });
 }
 
 exports.getpopularclips = function(req, res) {
