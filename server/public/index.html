@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+<style type="text/css">
+
+#content{
+	width:900px;
+	margin:0px auto;
+	padding-top: 30px;
+}
+
+body {
+	background: #F9f9f9;
+}
+
+.mycontent {
+	overflow:scroll;
+}
+
+div.slider{
+	width:9000px;
+}
+
+div.item-container {
+	padding:10px;
+	float:left;
+	margin-right: 10px;
+	box-shadow: 5px 5px 10px #CCC;	
+}
+
+div.item-image {
+	width:auto;
+	height:200px;
+}
+
+.item-container  .caption{
+	width:auto;
+	height:50px;
+}
+
+.item-image img{
+	max-width:150px;
+	max-height: 200px;
+}
+
+img.center{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+
+</style>
+</head>
+<body>
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+
+<script type="text/javascript">
+	var serverroot="http://localhost:3000";
+	var userid=57897388;
+
+	function getwidgets(userid, endpoint, id, addbutton) {
+		$.ajax({
+			url: serverroot+"/" + endpoint + "?userid="+userid
+		}).done(function(data){
+				for(var i in data) {
+					var clipid = data[i].clipid;
+					console.log(clipid);
+					fetch(clipid, function(clipdata,cid) {console.log(cid);push(cid, id, clipdata, addbutton);});
+				}
+			}
+		);
+	};
+
+	function fetch(itemId,callback){
+		console.log("fetch"+itemId);
+		$.ajax({
+			url:serverroot+"/getcachedclip?clipid="+itemId
+		}).done(function(data){
+			callback(data,itemId);
+		});
+	}
+	
+	function addexistingclip(itemid) {
+		$.ajax(
+		{
+			type:"POST",
+			url:serverroot+"/addclip",
+			data: {
+				itemid: itemid
+			},
+			success : function(data) {
+				$("#" + itemid+"-button").text("Added");
+				$("#" + itemid+"-button").removeClass("btn-primary");
+				$("#" + itemid+"-button").addClass("btn-success");
+			} 
+		});
+	}
+
+	function push(itemId,stackId,data, shouldadd){
+		console.log(itemId);
+
+		var elem=$('<div>');
+		elem.attr('id',itemId);
+		elem.addClass('item-container');
+		elem.addClass('thumbnail');
+		elem.addClass('text-center');
+		
+		var imaged=$('<div>');
+		imaged.addClass('item-image');
+		imaged.addClass('text-center');
+
+		var image=$('<img>');
+		image.attr('src',data["imageurl"]);
+
+		imaged.append(image);
+		elem.append(imaged);
+
+		var caption = $('<div>');
+		caption.addClass("caption");
+		caption.text("This is the new shit");
+		elem.append(caption);
+		console.log(shouldadd);
+		if (shouldadd) {
+			var button = $('<button>');
+			button.addClass('btn');
+			button.addClass('btn-primary');
+			button.text("+ Add Clip");
+			button.attr("id", itemId+"-button");
+			elem.append(button);
+			button.click(function(){ addexistingclip(itemId); });
+		}
+
+
+		$("#" + stackId).prepend(elem);
+	}
+
+	getwidgets(userid, "getclips", "mywidgets", false);
+	getwidgets(userid, "getpopularclips", "popularwidgets", true);
+	getwidgets(userid, "getrecentclips", "recentwidgets", true);
+
+</script>
+<div id="content">
+	<p class="lead">My Widgets</p>
+	<div class="mycontent">
+		<div class="slider" id="mywidgets">
+			
+		</div>
+	</div>
+	<p class="lead">Popular Widgets</p>
+	<div class="mycontent">
+		<div class="slider" id="popularwidgets">
+			
+		</div>
+	</div>	
+	<p class="lead">Recent Widgets</p>
+	<div class="mycontent">
+		<div class="slider" id="recentwidgets">
+			
+		</div>
+	</div>	
+</div>
+
+	
+</body>
+</html>
