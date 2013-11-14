@@ -38,14 +38,38 @@ exports.getclips = function(req, res) {
 	});
 };
 
-var createClipId = function(collection, data, callback) {
+var getClipImageUrl = function(clipData, callback) {
+    var path = '/image';
+    var params = querystring.stringify({
+        url : clipData.url,
+        screenwidth : clipData.screenwidth,
+        top : clipData.top,
+        left : clipData.left,
+        width : clipData.width,
+        height : clipData.height,
+        output : clipid
+    });
+    path = path + '?' + params;
+    utils.httpCurl(path, 'GET', function(body){
+        if(body == null) {
+            callback(null);
+        } else {
+            var imageFile = body.toString();
+            var imageUrl = config.IMAGE_BASE_URL + "/" + imageFile;
+            callback(imageUrl);
+        }
+    });
+}
+
+var createClipId = function(collection, clipData, callback) {
     var clipid = Math.round(Math.random() * 100000000).toString();
     data.clipid = clipid;
     collection.findOne({clipid: clipid}, function(clip) {
          if (clip == null) {
-            collection.save(data, function(err, count){
+            collection.save(clipData, function(err, count){
                 if(!err) {
                     console.log('ClipId: ' + clipid + 'saved successfully');
+
                     callback(clipid);
                 } else {
                 	callback(null);
@@ -90,21 +114,26 @@ exports.addclip = function(req, res) {
                 var clipids = user.clipids;
                 if (url != null && screenwidth != null && top != null && left != null && width != null && height != null) {
                     var clipCollection = db.collection('clips');
-                    createClipId(clipCollection, clipdata, function(clipid) {
-                    	if (clipid == null) {
-                    		db.close();
-                    		res.render('index', { title: 'Clip not generated' });
-                    	}
-                        clipids.push(clipid);
-                        usercollection.update({userid: userid}, {$set: {clipids: clipids}}, function(err, result) {
-                            if (err) {
-                                db.close();
-                                res.render('index', { title: 'Clip not added to collection.' });
-                            } else {
-                                db.close();
-                                //res.render('index', { title: userid });
-                                res.send(clipids);
-                            }
+                    console.log(clipdata);
+                    getClipImageUrl(clipdata, function(imageUrl){
+                        if (imageUrl != null) {
+                            clipdata.imageurl = imageUrl;
+                        }
+                        createClipId(clipCollection, clipdata, function(clipid) {
+                        	if (clipid == null) {
+                        		db.close();
+                        		res.render('index', { title: 'Clip not generated' });
+                        	}
+                            clipids.push(clipid);
+                            usercollection.update({userid: userid}, {$set: {clipids: clipids}}, function(err, result) {
+                                if (err) {
+                                    db.close();
+                                    res.render('index', { title: 'Clip not added to collection.' });
+                                } else {
+                                    db.close();
+                                    res.send(clipids);
+                                }
+                            });
                         });
                     });
                 } else {
@@ -127,25 +156,13 @@ exports.getclip = function(req, res) {
                 res.status(400);
                 res.send();
             } else {
-                var path = '/';
-                var params = querystring.stringify({
-                    url : clipData.url,
-                    screenwidth : clipData.screenwidth,
-                    top : clipData.top,
-                    left : clipData.left,
-                    width : clipData.width,
-                    height : clipData.height,
-                    output : clipid
-                });
-                path = path + '?' + params;
-                utils.httpCurl(path, 'GET', function(body){
-                    if(body == null) {
-                        db.close();
+                getClipImageUrl(clipData, function(imageUrl){
+                    db.close();
+                    if(imageUrl == null) {
+                        res.status(400);
                         res.send();
                     } else {
-                        var imageFile = body.toString();
-                        res.send({clipid: clipid, url : config.IMAGE_BASE_URL + "/" + imageFile});
-                        db.close();
+                        res.send(imageUrl);
                     }
                 });
             }
