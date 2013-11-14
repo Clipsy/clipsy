@@ -127,9 +127,9 @@ exports.addclip = function(req, res) {
                                 res.render('index', { title: 'Clip not added to collection.' });
                             } else {
                                 getClipImageUrl(clipid, clipdata, function(imageUrl){
-                                    if (imageUrl != null) {
+                                    if (imageUrl == null) {
                                         db.close();
-                                        res.send(clipids);
+                                        res.render('index', { title: 'Image not generated.' });
                                     } else {
                                         clipCollection.update({clipid: clipid}, {$set: {imageurl: imageUrl}}, function(err, result) {
                                             db.close();
