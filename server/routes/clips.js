@@ -1,4 +1,5 @@
 var MongoClient = require('mongodb').MongoClient
+var config = require('../config')
 
 /*
 var createId = function(collection, callback){
@@ -20,7 +21,7 @@ var createId = function(collection, callback){
 }*/
 
 exports.getclips = function(req, res) {
-  	MongoClient.connect('mongodb://127.0.0.1:27017/clipsy', function(err, db) {
+  	MongoClient.connect('config.MONGO_URL', function(err, db) {
 		if(err) throw err;
         var usercollection = db.collection('users');
 		
