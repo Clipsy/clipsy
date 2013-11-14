@@ -63,6 +63,24 @@ li {
       </li>
     </ul>
 
+    <ul id='roi-options-panel' class="bs-glyphicons" style="width:200px; display:none;">
+	  <li id='rectangle-roi-selector' data-state='off'>
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="glyphicon-class" style='margin-bottom:10px'>Draw A Region</span>
+      </li>
+      <li id='div-selector' data-state='off'>
+        <span class="glyphicon glyphicon-pushpin"></span>
+        <span class="glyphicon-class">Select Similar Elements</span>
+      </li>
+    </ul>
+
+
+	<div class="progress progress-striped active" id='please-wait' style='display:none'>
+	  <div class="progress-bar"  role="progressbar" style="width: 100%">
+	    <span class="sr-only"></span>Please wait...
+	  </div>
+	</div>
+
     <div id="qr-code" style='display:none'>
     	<p>Please scan the QR code below using your mobile device</p>
     	<canvas id="qr-code-canvas" width="200" height="200"></canvas>
