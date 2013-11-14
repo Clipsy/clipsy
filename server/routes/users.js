@@ -1,8 +1,10 @@
 var MongoClient = require('mongodb').MongoClient;
 var config = require('../config');
 
-var createId = function(collection, callback) {
-	var userid = Math.round(Math.random() * 100000000);
+
+var createId = function(collection, callback){
+	// Make sure userid s are always strings.
+	var userid = (Math.round(Math.random() * 100000000)).toString();
 	collection.findOne({userid: userid}, function(user) {
          if (user == null) {
          	collection.save({userid: userid, clipids: []}, function(err, count){

@@ -7,14 +7,15 @@ exports.getclips = function(req, res) {
 		if(err) throw err;
         var usercollection = db.collection('users');
 		
-        var userid = req.body.userid
+        var userid = req.query.userid;
+        console.log(userid);
 
-        usercollection.collection.findOne({userid: userid}, function(err, user) {
+        usercollection.findOne({userid: userid}, function(err, user) {
             if (err || user == null) {
-                // do something bro
                 db.close();
+                res.render('index', {title : 'no results'});
             } else {
-                var clipids = user.clips;
+                var clipids = user.clipids;
                 if (clipids == null || clipids.length == 0) {
                     res.render('index', {title : "00" });
                 }
@@ -22,12 +23,14 @@ exports.getclips = function(req, res) {
                 var results = [];
                 for (var i = 0; i < clipids.length; i++) {
                     var clipscollection = db.collection('clips');
-                    clipscollection.findOne({clipid: clipids[i]}, function(clipContent) {
-                        count ++;
+                    var clipid = clipids[i].toString();
+                    clipscollection.findOne({clipid: clipid}, function(err, clipContent) {
+                        count++;
                         results.push(clipContent);
                         if (count == clipids.length) {
                             db.close();
-                            res.render('index', {title : results});
+                            //res.render('index', {title : results});
+                            res.send(results);
                         };
                     });
                 }
