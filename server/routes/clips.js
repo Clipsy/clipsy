@@ -38,7 +38,7 @@ exports.getclips = function(req, res) {
 	});
 };
 
-var getClipImageUrl = function(clipData, callback) {
+var getClipImageUrl = function(clipid, clipData, callback) {
     var path = '/image';
     var params = querystring.stringify({
         url : clipData.url,
@@ -63,7 +63,7 @@ var getClipImageUrl = function(clipData, callback) {
 
 var createClipId = function(collection, clipData, callback) {
     var clipid = Math.round(Math.random() * 100000000).toString();
-    data.clipid = clipid;
+    clipData.clipid = clipid;
     collection.findOne({clipid: clipid}, function(clip) {
          if (clip == null) {
             collection.save(clipData, function(err, count){
@@ -114,26 +114,34 @@ exports.addclip = function(req, res) {
                 var clipids = user.clipids;
                 if (url != null && screenwidth != null && top != null && left != null && width != null && height != null) {
                     var clipCollection = db.collection('clips');
-                    console.log(clipdata);
-                    getClipImageUrl(clipdata, function(imageUrl){
-                        if (imageUrl != null) {
-                            clipdata.imageurl = imageUrl;
-                        }
-                        createClipId(clipCollection, clipdata, function(clipid) {
-                        	if (clipid == null) {
-                        		db.close();
-                        		res.render('index', { title: 'Clip not generated' });
-                        	}
-                            clipids.push(clipid);
-                            usercollection.update({userid: userid}, {$set: {clipids: clipids}}, function(err, result) {
-                                if (err) {
-                                    db.close();
-                                    res.render('index', { title: 'Clip not added to collection.' });
-                                } else {
-                                    db.close();
-                                    res.send(clipids);
-                                }
-                            });
+                    
+                    createClipId(clipCollection, clipdata, function(clipid) {
+                    	if (clipid == null) {
+                    		db.close();
+                    		res.render('index', { title: 'Clip not generated' });
+                    	}
+                        clipids.push(clipid);
+                        usercollection.update({userid: userid}, {$set: {clipids: clipids}}, function(err, result) {
+                            if (err) {
+                                db.close();
+                                res.render('index', { title: 'Clip not added to collection.' });
+                            } else {
+                                getClipImageUrl(clipid, clipdata, function(imageUrl){
+                                    if (imageUrl != null) {
+                                        db.close();
+                                        res.send(clipids);
+                                    } else {
+                                        clipCollection.update({clipid: clipid}, {$set: {imageurl: imageUrl}}, function(err, result) {
+                                            db.close();
+                                            if (err) {
+                                                res.render('index', { title: 'Clip not added to collection.' });
+                                            } else {
+                                                res.send(clipids);    
+                                            }
+                                        });
+                                    } 
+                                });
+                            }
                         });
                     });
                 } else {
@@ -156,7 +164,7 @@ exports.getclip = function(req, res) {
                 res.status(400);
                 res.send();
             } else {
-                getClipImageUrl(clipData, function(imageUrl){
+                getClipImageUrl(clipid, clipData, function(imageUrl){
                     db.close();
                     if(imageUrl == null) {
                         res.status(400);
