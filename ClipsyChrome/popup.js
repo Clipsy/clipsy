@@ -121,7 +121,7 @@ $('#div-selector').click(function(){
 $('#register-new-device').click(function(){
 	console.log("Clicked on register new device...");
 	$('#please-wait').show();
-	$.post('/adduser',function(data){
+	$.post('http://0.0.0.0:3000/adduser',function(data){
 		$('#please-wait').hide();
 		$('#qr-code').show();
 		setupqr('qr-code-canvas',200,200);
