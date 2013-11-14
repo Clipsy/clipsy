@@ -27,22 +27,23 @@ exports.getclips = function(req, res) {
 		
         var userid = req.body.userid
 
-        user.collection.findOne({userid: userid}, function(err, user) {
-            if (user == null) {
+        usercollection.collection.findOne({userid: userid}, function(err, user) {
+            if (err || user == null) {
+                // do something bro
                 db.close();
             } else {
-                var clipIds = user.clips;
-                if (clipIds == null || clipIds.length == 0) {
+                var clipids = user.clips;
+                if (clipids == null || clipids.length == 0) {
                     res.render('index', {title : "00" });
                 }
                 var count = 0;
                 var results = [];
-                for (var i = 0; i < clipIds.length; i++) {
+                for (var i = 0; i < clipids.length; i++) {
                     var clipscollection = db.collection('clips');
-                    clipscollection.findOne({clipid: clipIds[i]}, function(clipContent) {
+                    clipscollection.findOne({clipid: clipids[i]}, function(clipContent) {
                         count ++;
                         results.push(clipContent);
-                        if (count == clipIds.length) {
+                        if (count == clipids.length) {
                             db.close();
                             res.render('index', {title : results});
                         };
@@ -53,7 +54,61 @@ exports.getclips = function(req, res) {
 	});
 };
 
-exports.getclipdata = function(req, res) {
-    
+var createClipId = function(collection, url, coords, callback) {
+    var clipid = Math.round(Math.random() * 100000000);
+    collection.findOne({clipid: clipid}, function(clip) {
+         if (user == null) {
+            collection.save({clipid: userid, url: url, coords : coords}, function(err, count){
+                if(!err) {
+                    console.log('ClipId: ' + clipid + 'saved successfully');
+                    callback(clipid);
+                } else {
+                    // do something
+                }
+            });
+         } else {
+            createId(collection, url, coords, callback);
+         }
+    });
+}
+
+exports.addClip = function(req, res) {
+    var userid = req.body.userid;
+    var url = req.body.url;
+    var coords = req.body.coords;
+    MongoClient.connect(config.MONGO_URL, function(err, db) {
+        if (err) {
+            db.close();
+            throw err;
+        }
+        var usercollection = db.collection('users');
+        usercollection.collection.findOne({userid: userid}, function(err, user) {
+            if (err || user == null) {
+                // do something bro
+                db.close();
+            } else {
+                var clipids = user.clipids;
+                if (url != null && url != undefined && url != "" && coords != undefined && coords != null) {
+                    var found = true;
+                    var clipCollection = db.collection('clips');
+                    createClipId(clipCollection, url, coords, function(clipid) {
+                        clipids.push(clipid);
+                        usercollection.update({userid: userid}, {$set: {clipids: clipids}}, function(err, result) {
+                            if (err) {
+                                db.close();
+                                // do something
+                            } else {
+                                db.close();
+                                res.render('index', { title: userid });
+                            }
+                        });
+                        
+                    });
+                } else {
+                    db.close();
+                }
+            }
+        });
+    });
 }
 
