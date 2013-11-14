@@ -148,6 +148,7 @@ function pushROIToServer(){
     	type : "POST",
     	url : hiturl,
     	data : {
+    		userid: 57897388,
     		url : url,
         	screenwidth : sw,
         	top : top_,
@@ -161,16 +162,4 @@ function pushROIToServer(){
     	}
     });
 };
-/*
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "http://localhost:3000/getclips?userid=1", true);
-xhr.onreadystatechange = function() {
-  if (xhr.readyState == 4) {
-    // WARNING! Might be evaluating an evil script!
-    //var resp = eval("(" + xhr.responseText + ")");
-    //...
-    console.log("fssdgfdgfdgfdgfgdf");
-  }
-}
-xhr.send();
-};*/
+
