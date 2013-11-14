@@ -1,0 +1,29 @@
+  {
+  "name": "Clipsy",
+  "version": "1.0",
+  "manifest_version": 2,
+  
+  "description": "Clipsy allows you to quickly create widget for your android phone on-the-fly by selecting your region of interest from any website!",
+  "icons": { "16": "images/clipsy_16x16.png",
+             "48": "images/clipsy_48x48.png",
+             "128": "images/clipsy_128x128.png" },
+
+  "browser_action": {
+    "default_icon": {                    
+      "19": "images/clipsy_20x20.png"        
+    },
+    "default_title": "Cipsy",     
+    "default_popup": "popup.html"       
+  },
+
+  "permissions": [
+    "*://*/*",
+    "contextMenus"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*"],
+      "js" : ["jquery.js","contentscript.js"]
+    }
+  ]
+}

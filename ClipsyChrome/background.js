@@ -13,7 +13,7 @@ var drawmode=false;
 var width_;
 var height_;
 var top_;
-var left_;
+var left_; 
 
 function drawMode(e){
 	if(mousedown){
