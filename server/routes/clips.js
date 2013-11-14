@@ -177,3 +177,17 @@ exports.getclip = function(req, res) {
         });
     });
 }
+
+exports.addexistingclip = function(req, res) {
+	var clipid = req.body.clipid;
+	var userid = req.body.userid;
+
+}
+
+exports.getpopularclips = function(req, res) {
+    
+}
+
+exports.getrecentclips = function(req, res) {
+
+}

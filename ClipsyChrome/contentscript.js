@@ -130,7 +130,7 @@ function undrawROIRectangle(){
 function pushROIToServer(){
 	var url = document.URL;
     var sw = $(window).width();
-    var hiturl = "http://0.0.0.0:3000/image?";
+    var hiturl = "http://0.0.0.0:3000/addclip?";
     hiturl += "url="+url;
     hiturl += "&sw="+sw;
     hiturl += "&top="+top_;
