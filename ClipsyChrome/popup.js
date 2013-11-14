@@ -129,3 +129,7 @@ $('#register-new-device').click(function(){
 	});
 });
 
+$('#marketplace-link').click(function(){
+	chrome.tabs.create({url: 'http://0.0.0.0/index.html'});
+});
+
