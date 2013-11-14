@@ -1,6 +1,71 @@
-<div id='start-roi-capture'>Capture ROI</div>
-<div id='end-roi-capture'>Stop Capturing ROI</div>
-<div id='generate-qr-code'>Generate QR Code</div>
+<link href="bootstrap.min.css" rel="stylesheet" />
+<style>
+
+.bs-glyphicons {
+  padding-left: 0;
+  padding-bottom: 1px;
+  margin-bottom: 20px;
+  list-style: none;
+  overflow: hidden;
+}
+.bs-glyphicons li {
+  float: left;
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  margin: 0 -1px -1px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+.bs-glyphicons .glyphicon {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+.bs-glyphicons .glyphicon-class {
+  display: block;
+  text-align: center;
+}
+.bs-glyphicons li:hover {
+  background-color: rgba(86,61,124,.1);
+}
+
+li {
+		cursor: pointer;
+}
+
+#create-new-widget:hover, #register-new-device:hover {
+	background-color:#3276b1;
+	border-color:#285e8e;
+	color:#fff;
+}
+
+.selected {
+	color: #fff !important;
+	background-color: #47a447 !important;
+	border-color: #398439 !important;;
+}
+
+</style>
+
+<div class="container" style="margin-top:20px">
+	<div class="lead head">ClipWiz</div>
+	<ul class="bs-glyphicons" style="width:200px">
+	  <li id='create-new-widget' data-state='off'>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon-class" style='margin-bottom:10px'>Create New Widget</span>
+      </li>
+      <li id='register-new-device'>
+        <span class="glyphicon glyphicon-phone"></span>
+        <span class="glyphicon-class">Register New Device</span>
+      </li>
+    </ul>
+
+</div>
+
 <script src='jquery.js'></script>
+<script src='bootstrap.min.js'></script>
 <script src='popup.js'></script>
 

@@ -31,14 +31,14 @@ function startROICaptureMode(){
 	// create overlay
 	$('<div>')
 		.attr('id','clipsy-roi-overlay')
-    	.attr("style", "background-color: #ccccdc; opacity: 0.1; width: 100%; position: absolute; top: 0; left: 0; z-index: 1000;")
+    	.attr("style", "background-color: #ccccdc; opacity: 0.5; width: 100%; position: absolute; top: 0; left: 0; z-index: 1000;")
     	.css("height", document.height)
     	.appendTo('body');
 
     // create rectangle
     $('<div>')
     	.attr('id','clipsy-roi-selector')
-    	.attr("style", "background-color: rgba(37, 31, 160, 0.69); position: absolute; z-index: 1001; top: 0; left: 0;")
+    	.attr("style", "background-color: #428bca; position: absolute; z-index: 1001; top: 0; left: 0;")
     	.appendTo('#clipsy-roi-overlay')
 
    	// monitor mouse events for drawing the rectangle
@@ -98,11 +98,11 @@ function confirmROIRectangle(){
 	// highlight ROI rectangle and ask for confirmation
 	console.log("Highlighting ROI...");
 	$('#clipsy-roi-selector')
-		.css("border","solid 2px red")
+		.css("border","solid 2px #285e8e")
 		.append(
-			$('<div>')
+			$('<button>')
 				.attr('id', 'clipsy-roi-yes')
-				.attr("style", "color:black; z-index: 1002; opacity: 0.7;")
+				.attr("style", "color:black; z-index: 1002; opacity: 1.0; position:absolute; bottom: 10px; right: 70px;")
 				.text('Confirm')
 				.click(function(){
 					pushROIToServer();
@@ -111,9 +111,9 @@ function confirmROIRectangle(){
 				})
 		)
 		.append(
-			$('<div>')
+			$('<button>')
 				.attr('id', 'clipsy-roi-no')
-				.attr("style", "color:black; z-index: 1002; opactiy: 0.7;")
+				.attr("style", "color:black; z-index: 1002; opactiy: 1.0; position:absolute; bottom: 10px; right: 10px;")
 				.text('Cancel')
 				.click(undrawROIRectangle)
 		);
