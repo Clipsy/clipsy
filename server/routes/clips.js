@@ -15,7 +15,7 @@ exports.getclips = function(req, res) {
             } else {
                 var clipids = user.clipids;
                 if (clipids == null || clipids.length == 0) {
-                    res.render('index', {title : "00" });
+                    res.render('index', {title : "no clips found" });
                 }
                 var count = 0;
                 var results = [];
