@@ -67,12 +67,44 @@ img.center{
 
 
 <script type="text/javascript">
+	var serverroot="";
+	var userid="";
+	$.ajax({
+			url: serverroot+"/getclips?userid="+userid
+		}).done(function(data){
+				for(var i in data){
+					fetch(data[i], function(clipdata) {push(data[i],'userItems', clipdata);});
+				}
+			}
+		);
+
+
+	function fetch(itemId,callback){
+		$.ajax({
+			url:serverroot+"/getclip?clipid="+itemId
+		}).done(function(data){
+			callback(data);
+		});
+	}
 	
-	function push(itemId,stackId){
+	function push(itemId,stackId,data){
+		
 		var elem=$('<div>');
+		elem.attr('id',itemId);
 		elem.addClass('item-container');
 		elem.addClass('thumbnail');
-		elem.addClass('');
+		elem.addClass('text-center');
+		
+		var imaged=$('<div>');
+		imaged.addClass('item-image');
+		imaged.addClass('text-center');
+
+		var image=$('img');
+		img.attr('src',data["url"]);
+
+		imaged.append(image);
+		elem.append(imaged);
+
 		$(stackId).prepend(elem);
 	}
 
