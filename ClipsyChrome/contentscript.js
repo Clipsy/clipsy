@@ -32,7 +32,7 @@ function startROICaptureMode(){
 	$('<div>')
 		.attr('id','clipsy-roi-overlay')
     	.attr("style", "background-color: #ccccdc; opacity: 0.5; width: 100%; position: absolute; top: 0; left: 0; z-index: 1000;")
-    	.css("height", document.height)
+    	.css("height", $(document).height())
     	.appendTo('body');
 
     // create rectangle
