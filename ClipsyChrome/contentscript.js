@@ -32,7 +32,7 @@ function startROICaptureMode(){
 	$('<div>')
 		.attr('id','clipsy-roi-overlay')
     	.attr("style", "background-color: #ccccdc; opacity: 0.5; width: 100%; position: absolute; top: 0; left: 0; z-index: 1000;")
-    	.css("height", document.height)
+    	.css("height", $(document).height())
     	.appendTo('body');
 
     // create rectangle
@@ -143,12 +143,34 @@ function undrawROIRectangle(){
 function pushROIToServer(){
 	var url = document.URL;
     var sw = $(window).width();
-    var hiturl = "http://0.0.0.0:3000/addclip?";
-    hiturl += "url="+url;
-    hiturl += "&sw="+sw;
-    hiturl += "&top="+top_;
-    hiturl += "&left="+left_;
-    hiturl += "&width="+width_;
-    hiturl += "&height="+height_;
-    console.log("Pushing ROI to URL:" + hiturl);
+    var hiturl = "http://0.0.0.0:3000/addclip";
+    $.ajax({
+    	type : "POST",
+    	url : hiturl,
+    	data : {
+    		url : url,
+        	screenwidth : sw,
+        	top : top_,
+        	left : left_,
+        	width : width_,
+        	height : height_
+    	},
+    	success : function(data) {
+    		console.log("Pushing ROI to URL:" + hiturl);
+    		console.log(data);
+    	}
+    });
 };
+/*
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "http://localhost:3000/getclips?userid=1", true);
+xhr.onreadystatechange = function() {
+  if (xhr.readyState == 4) {
+    // WARNING! Might be evaluating an evil script!
+    //var resp = eval("(" + xhr.responseText + ")");
+    //...
+    console.log("fssdgfdgfdgfdgfgdf");
+  }
+}
+xhr.send();
+};*/
