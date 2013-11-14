@@ -125,13 +125,17 @@ function destDrawMode(){
 //TODO plug this into code
 function overlayCanvas(){
   var canvas = $('<canvas>');
-    canvas.addClass('qrcanv');
+    canvas.attr('id','qrcanv');
     canvas.attr("width",500);
     canvas.attr("height",500);
     canvas.css("z-index",1002);
-    $('overlay').append(canvas);
-  setupqr();
+    canvas.css("position","absolute");
+    canvas.css("top",0);
+    canvas.css("left",0);
+    $('.overlay').append(canvas);
+    setupqr('qrcanv',500,500);
 }
+
 
 function register(){
   overlayCanvas();
