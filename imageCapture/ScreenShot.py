@@ -12,7 +12,7 @@ app=Flask(__name__)
 
 
 users={}
-root='0.0.0.0:3000'
+root='localhost:4000'
 
 
 
@@ -21,14 +21,15 @@ def getPicture():
     #reading args
     print str(request.args)
     url=request.args.get('url')
-    screenWidth=request.args.get('sw')
+    screenWidth=request.args.get('screenwidth')
     top=request.args.get('top')
     left=request.args.get('left')
     width=request.args.get('width')
     height=request.args.get('height')
-    filename=hashlib.sha1(url+screenWidth+top+left+width+height).hexdigest()+".png"
+    filename=hashlib.sha1(url+screenWidth+top+left+width+height).hexdigest()
     call(["python","capture.py",url,screenWidth,top,left,width,height,filename])
-    return filename
+    call(["mv",filename+".png","../server/public/images/"])
+    return filename+".png"
 
 
 @app.route('/')
@@ -37,5 +38,5 @@ def api_root():
 
 
 if __name__=='__main__':
-    app.run(host='0.0.0.0',port=3000,debug=True)
-    
+    app.run(host='localhost',port=4000,debug=True)
+

@@ -12,6 +12,7 @@ class Screenshot(QWebView):
     def __init__(self):
         self.app = QApplication(sys.argv)
         QWebView.__init__(self)
+        self.picture = QPainter
         self._loaded = False
         self.loadFinished.connect(self._loadFinished)
 
@@ -52,11 +53,11 @@ def makePicture(url,screenWidth,top,left,width,height,output):
     left=int(left)
     width=int(width)
     height=int(height)
-    s.capture(url,screenWidth,"temp.png")
-    img=Image.open("temp.png")
+    s.capture(url,screenWidth,output+"_temp.png")
+    img=Image.open(output+"_temp.png")
     box=(left, top, left+width, top+height)
     area=img.crop(box)
-    area.save(output,"png")
+    area.save(output+".png","png")
 
 if __name__ == '__main__':
     makePicture(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6],sys.argv[7])
