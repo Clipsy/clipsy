@@ -38,8 +38,8 @@ function startROICaptureMode(){
     // create rectangle
     $('<div>')
     	.attr('id','clipsy-roi-selector')
-    	.attr("style", "background-color: #428bca; position: absolute; z-index: 1001; top: 0; left: 0;")
-    	.appendTo('#clipsy-roi-overlay')
+    	.attr("style", "background-color: #428bca; position: absolute; z-index: 1001; top: 0; left: 0; opacity: 0.3;")
+    	.insertAfter('#clipsy-roi-overlay')
 
    	// monitor mouse events for drawing the rectangle
 	mousedown = false;
@@ -62,13 +62,15 @@ function startROICaptureMode(){
 		mousedown = false;
 		var curPos = getCursorXY(e);
 		if(Math.abs(curPos.x-startPos.x) + Math.abs(curPos.y-startPos.y) > 0) {
-			confirmROIRectangle();
+			confirmROIRectangle(curPos);
 		} 
 	});
 };
 
 function endROICaptureMode(){
 	$('#clipsy-roi-overlay').remove();
+	$('#clipsy-roi-selector').remove();
+	$('.clipsy-roi-confirm-btn').remove();
 	console.log("Ending ROI capture mode...");
 };
 
@@ -94,15 +96,24 @@ function redrawROIRectangle(start, end){
 		.css( "height", height);
 };
 
-function confirmROIRectangle(){
+function confirmROIRectangle(curPos){
+
+	if($('.clipsy-roi-confirm-btn').length > 0) {
+		return;
+	}
+
 	// highlight ROI rectangle and ask for confirmation
 	console.log("Highlighting ROI...");
+	var bty = curPos.y - 21;
+	var btx1 = curPos.x - 115;
+	var btx2 = curPos.x - 53;
 	$('#clipsy-roi-selector')
 		.css("border","solid 2px #285e8e")
-		.append(
+		.after(
 			$('<button>')
 				.attr('id', 'clipsy-roi-yes')
-				.attr("style", "color:black; z-index: 1002; opacity: 1.0; position:absolute; bottom: 10px; right: 70px;")
+				.addClass('clipsy-roi-confirm-btn')
+				.attr("style", "color:black; z-index: 1002; opacity: 1.0; position: absolute; top: " + bty + "px; left:" + btx1 + "px")
 				.text('Confirm')
 				.click(function(){
 					pushROIToServer();
@@ -110,10 +121,11 @@ function confirmROIRectangle(){
 					endROICaptureMode();
 				})
 		)
-		.append(
+		.after(
 			$('<button>')
 				.attr('id', 'clipsy-roi-no')
-				.attr("style", "color:black; z-index: 1002; opactiy: 1.0; position:absolute; bottom: 10px; right: 10px;")
+				.addClass('clipsy-roi-confirm-btn')
+				.attr("style", "color:black; z-index: 1002; opactiy: 1.0;position: absolute; top: " + bty + "px; left:" + btx2 + "px")
 				.text('Cancel')
 				.click(undrawROIRectangle)
 		);
@@ -122,8 +134,9 @@ function confirmROIRectangle(){
 function undrawROIRectangle(){
 	$('#clipsy-roi-selector')
 		.css("width", 0)
-    	.css("height", 0)
-    	.empty();
+    	.css("height", 0);
+    $('.clipsy-roi-confirm-btn').remove();
+
     console.log("Undrawing ROI rectangle");
 };
 
