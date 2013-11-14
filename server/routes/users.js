@@ -1,7 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 var config = require('../config');
 
-
 var createId = function(collection, callback){
 	// Make sure userid s are always strings.
 	var userid = (Math.round(Math.random() * 100000000)).toString();
@@ -30,4 +29,3 @@ exports.adduser = function(req, res) {
         });
 	});
 };
-

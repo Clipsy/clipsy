@@ -1,6 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 var config = require('../config');
-
+var utils = require('./utils');
+var querystring = require('querystring');
 
 exports.getclips = function(req, res) {
   	MongoClient.connect(config.MONGO_URL, function(err, db) {
@@ -37,11 +38,12 @@ exports.getclips = function(req, res) {
 	});
 };
 
-var createClipId = function(collection, url, coords, callback) {
+var createClipId = function(collection, data, callback) {
     var clipid = Math.round(Math.random() * 100000000).toString();
+    data.clipid = clipid;
     collection.findOne({clipid: clipid}, function(clip) {
          if (clip == null) {
-            collection.save({clipid: clipid, url: url, coords : coords}, function(err, count){
+            collection.save(data, function(err, count){
                 if(!err) {
                     console.log('ClipId: ' + clipid + 'saved successfully');
                     callback(clipid);
@@ -50,7 +52,7 @@ var createClipId = function(collection, url, coords, callback) {
                 }
             });
          } else {
-            createId(collection, url, coords, callback);
+            createClipId(collection, url, coords, callback);
          }
     });
 }
@@ -58,7 +60,20 @@ var createClipId = function(collection, url, coords, callback) {
 exports.addclip = function(req, res) {
     var userid = req.body.userid;
     var url = req.body.url;
-    var coords = req.body.coords;
+    var screenwidth = req.body.screenwidth;
+    var top = req.body.top;
+    var left = req.body.left;
+    var width = req.body.width;
+    var height = req.body.height;
+    
+    var clipdata = {
+        url : url,
+        screenwidth : screenwidth,
+        top : top,
+        left : left,
+        width : width,
+        height : height
+    };
 
     MongoClient.connect(config.MONGO_URL, function(err, db) {
         if (err) {
@@ -73,10 +88,9 @@ exports.addclip = function(req, res) {
                 res.render('index', { title: 'User not found' });
             } else {
                 var clipids = user.clipids;
-                if (url != null &&  url != "" && coords != null) {
-                    var found = true;
+                if (url != null && screenwidth != null && top != null && left != null && width != null && height != null) {
                     var clipCollection = db.collection('clips');
-                    createClipId(clipCollection, url, coords, function(clipid) {
+                    createClipId(clipCollection, clipdata, function(clipid) {
                     	if (clipid == null) {
                     		db.close();
                     		res.render('index', { title: 'Clip not generated' });
@@ -92,7 +106,6 @@ exports.addclip = function(req, res) {
                                 res.send(clipids);
                             }
                         });
-                        
                     });
                 } else {
                     db.close();
@@ -105,14 +118,37 @@ exports.addclip = function(req, res) {
 
 exports.getclip = function(req, res) {
 	MongoClient.connect(config.MONGO_URL, function(err, db) {
-		if(err)	throw err;
-		var clipid = req.query.clipid;
-		/*
-			Get image from Nikhil's api.
-			Assume that the images are saved as <random_id>.png
-		*/
-		var imageFile = "12311133.png";
-		db.close();
-		res.send({clipid: clipid, url : config.IMAGE_BASE_URL + "/" + imageFile});
-	});
+        if(err) throw err;
+        var clipid = req.query.clipid;
+        var clipCollection = db.collection('clips');
+        clipCollection.findOne({clipid: clipid}, function(err, clipData){
+            if(err) {
+                db.close();
+                res.status(400);
+                res.send();
+            } else {
+                var path = '/';
+                var params = querystring.stringify({
+                    url : clipData.url,
+                    screenwidth : clipData.screenwidth,
+                    top : clipData.top,
+                    left : clipData.left,
+                    width : clipData.width,
+                    height : clipData.height,
+                    output : clipid
+                });
+                path = path + '?' + params;
+                utils.httpCurl(path, 'GET', function(body){
+                    if(body == null) {
+                        db.close();
+                        res.send();
+                    } else {
+                        var imageFile = body.toString();
+                        res.send({clipid: clipid, url : config.IMAGE_BASE_URL + "/" + imageFile});
+                        db.close();
+                    }
+                });
+            }
+        });
+    });
 }
