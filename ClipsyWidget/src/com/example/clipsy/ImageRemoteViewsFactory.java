@@ -90,6 +90,7 @@ public class ImageRemoteViewsFactory implements RemoteViewsFactory{
 		    if(bitmap != null){
 	    		rv.setImageViewBitmap(R.id.image_item, bitmap);
 	    	}
+		    Log.i("ImageFactory", "Got image");
 			return rv;
 	}
 
@@ -98,7 +99,7 @@ public class ImageRemoteViewsFactory implements RemoteViewsFactory{
 		// Make api call to get clips
 		//clips.add(new Clip("http://www.hdwallpapers3d.com/wp-content/uploads/2013/05/Katrina-Kaif-Quotes-HD-wallpaper.jpg"));
 		//clips.add(new Clip("http://celebs-review.com/wp-content/uploads/2013/07/katrina-kaif.jpg"));
-		
+		clips = ClipAsyncUtils.getClips();
 		Log.i("ImageFactory", "data changed" + clips);
 	}
 

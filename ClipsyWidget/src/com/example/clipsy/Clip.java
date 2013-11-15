@@ -7,6 +7,10 @@ public class Clip {
 	private TYPE type;
 	private List<String> data;
 
+	public Clip(){
+		
+		
+	}
 	public Clip(String url, TYPE type){
 		this.type = type;
 		this.url = url;
