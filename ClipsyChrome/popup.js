@@ -119,7 +119,7 @@ $('#div-selector').click(function(){
 $('#register-new-device').click(function(){
 	console.log("Clicked on register new device...");
 	$('#please-wait').show();
-	$.post('http://0.0.0.0:3000/adduser',function(userid){
+	$.post('http://localhost:3000/adduser',function(userid){
 
 		$('#please-wait').hide();
 		$('#qr-code').show();
@@ -134,7 +134,7 @@ $('#register-new-device').click(function(){
 $('#marketplace-link').click(function(){
 	chrome.storage.local.get('clipsy-userid', function(data) {
 		userid = data["clipsy-userid"];
-		chrome.tabs.create({url: 'http://0.0.0.0:3000/index.html?user='+userid});
+		chrome.tabs.create({url: 'http://localhost:3000/index.html?user='+userid});
 	});
 });
 
