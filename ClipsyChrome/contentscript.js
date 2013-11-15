@@ -25,6 +25,8 @@ var myDomOutline;
 
 function handleDivSelected(element){
 	console.log("Clicked element", element);
+	$(element).siblings().css('border','solid 2px red');
+	console.log($(element).siblings());
 };
 
 function startDivSelectorMode(){
@@ -178,7 +180,7 @@ function pushROIToServer(){
 		userid = data["clipsy-userid"];
 		var url = document.URL;
 	    var sw = $(window).width();
-	    var hiturl = "http://0.0.0.0:3000/addclip";
+	    var hiturl = "http://localhost:3000/addclip";
 	    console.log(userid);
 	    $.ajax({
 	    	type : "POST",
