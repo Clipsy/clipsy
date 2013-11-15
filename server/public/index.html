@@ -67,8 +67,15 @@ img.center{
 
 
 <script type="text/javascript">
+	function getURLParameter(name) {
+	    return decodeURI(
+	        (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
+	    );
+	};
+
 	var serverroot="http://localhost:3000";
-	var userid=57897388;
+	var userid=getURLParameter("user");
+	if (userid == null) userid = 57897388;
 
 	function getwidgets(userid, endpoint, id, addbutton) {
 		$.ajax({
