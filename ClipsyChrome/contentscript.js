@@ -152,18 +152,10 @@ function confirmROIRectangle(curPos){
 		)
 		.after(
 			$('<button>')
-				.attr('id', 'clipsy-roi-no')
-				.addClass('clipsy-roi-confirm-btn')
-				.attr("style", "color:black; z-index: 1002; opactiy: 1.0;position: absolute; top: " + bty + "px; left:" + btx2 + "px")
-				.text('Redraw')
-				.click(undrawROIRectangle)
-		)
-		.after(
-			$('<button>')
 				.attr('id', 'clipsy-roi-quit')
 				.addClass('clipsy-roi-confirm-btn')
-				.attr("style", "color:black; z-index: 1002; opactiy: 1.0;position: absolute; top: " + bty + "px; left:" + btx3 + "px")
-				.text('Quit')
+				.attr("style", "color:black; z-index: 1002; opactiy: 1.0;position: absolute; top: " + bty + "px; left:" + btx2 + "px")
+				.text('Cancel')
 				.click(function(){
 					undrawROIRectangle();
 					endROICaptureMode();
@@ -181,25 +173,31 @@ function undrawROIRectangle(){
 };
 
 function pushROIToServer(){
-	var url = document.URL;
-    var sw = $(window).width();
-    var hiturl = "http://0.0.0.0:3000/addclip";
-    $.ajax({
-    	type : "POST",
-    	url : hiturl,
-    	data : {
-    		userid: 57897388,
-    		url : url,
-        	screenwidth : sw,
-        	top : top_,
-        	left : left_,
-        	width : width_,
-        	height : height_
-    	},
-    	success : function(data) {
-    		console.log("Pushing ROI to URL:" + hiturl);
-    		console.log(data);
-    	}
-    });
+	// get userid from storage
+	chrome.storage.local.get('clipsy-userid', function(data) {
+		userid = data["clipsy-userid"];
+		var url = document.URL;
+	    var sw = $(window).width();
+	    var hiturl = "http://0.0.0.0:3000/addclip";
+	    console.log(userid);
+	    $.ajax({
+	    	type : "POST",
+	    	url : hiturl,
+	    	data : {
+	    		userid: userid,
+	    		url : url,
+	        	screenwidth : sw,
+	        	top : top_,
+	        	left : left_,
+	        	width : width_,
+	        	height : height_
+	    	},
+	    	success : function(data) {
+	    		console.log("Pushing ROI to URL:" + hiturl);
+	    		console.log(data);
+	    	}
+	    });
+     	message('Saved userid:' + userid);
+	});
 };
 
