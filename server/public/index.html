@@ -92,18 +92,19 @@ img.center{
 		});
 	}
 	
-	function addexistingclip(itemid) {
+	function addexistingclip(cid) {
 		$.ajax(
 		{
 			type:"POST",
-			url:serverroot+"/addclip",
+			url:serverroot+"/addexistingclip",
 			data: {
-				itemid: itemid
+				clipid: cid,
+				userid: userid
 			},
 			success : function(data) {
-				$("#" + itemid+"-button").text("Added");
-				$("#" + itemid+"-button").removeClass("btn-primary");
-				$("#" + itemid+"-button").addClass("btn-success");
+				$("#" + cid+"-button").text("Added");
+				$("#" + cid+"-button").removeClass("btn-primary");
+				$("#" + cid+"-button").addClass("btn-success");
 			} 
 		});
 	}
@@ -129,7 +130,6 @@ img.center{
 
 		var caption = $('<div>');
 		caption.addClass("caption");
-		caption.text("This is the new shit");
 		elem.append(caption);
 		console.log(shouldadd);
 		if (shouldadd) {
