@@ -134,7 +134,7 @@ $('#register-new-device').click(function(){
 $('#marketplace-link').click(function(){
 	chrome.storage.local.get('clipsy-userid', function(data) {
 		userid = data["clipsy-userid"];
-		chrome.tabs.create({url: 'http://0.0.0.0/index.html?user='+userid});
+		chrome.tabs.create({url: 'http://0.0.0.0:3000/index.html?user='+userid});
 	});
 });
 
