@@ -25,8 +25,16 @@ var myDomOutline;
 
 function handleDivSelected(element){
 	console.log("Clicked element", element);
-	$(element).siblings().css('border','solid 2px red');
-	console.log($(element).siblings());
+	jel = $(document).find(element);
+	jel.siblings().css('border','solid 2px red');
+	console.log(jel.siblings());
+
+	var depth = jel.parents().length;
+	var rel = jel.attr('rel');
+	console.log(depth, jel.prop("tagName"));
+	var all_at_depth = $(jel.prop("tagName")).filter( function() { return $($(this)[0]).parents().length == depth && $($(this)[0]).attr('rel') == rel; } );
+	console.log(all_at_depth);
+	all_at_depth.css('border','solid 5px blue');
 };
 
 function startDivSelectorMode(){
