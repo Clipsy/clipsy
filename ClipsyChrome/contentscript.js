@@ -152,18 +152,10 @@ function confirmROIRectangle(curPos){
 		)
 		.after(
 			$('<button>')
-				.attr('id', 'clipsy-roi-no')
-				.addClass('clipsy-roi-confirm-btn')
-				.attr("style", "color:black; z-index: 1002; opactiy: 1.0;position: absolute; top: " + bty + "px; left:" + btx2 + "px")
-				.text('Redraw')
-				.click(undrawROIRectangle)
-		)
-		.after(
-			$('<button>')
 				.attr('id', 'clipsy-roi-quit')
 				.addClass('clipsy-roi-confirm-btn')
 				.attr("style", "color:black; z-index: 1002; opactiy: 1.0;position: absolute; top: " + bty + "px; left:" + btx3 + "px")
-				.text('Quit')
+				.text('Cancel')
 				.click(function(){
 					undrawROIRectangle();
 					endROICaptureMode();
