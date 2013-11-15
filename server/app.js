@@ -36,6 +36,7 @@ app.get('/getpopularclips', clips.getpopularclips);
 app.post('/addexistingclip', clips.addexistingclip);
 app.post('/addclip', clips.addclip);
 app.post('/adduser', users.adduser);
+app.get('/updateclips', clips.updateclips);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

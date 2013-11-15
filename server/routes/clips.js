@@ -230,6 +230,47 @@ exports.addexistingclip = function(req, res) {
     });
 }
 
+exports.updateclips = function(req, res) {
+    MongoClient.connect(config.MONGO_URL, function(err, db) {
+        if(err) throw err;
+        var usercollection = db.collection('users');
+        var userid = req.query.userid;
+
+        usercollection.findOne({userid: userid}, function(err, user) {
+            if (err || user == null) {
+                db.close();
+                res.send();
+            } else {
+                var clipids = user.clipids;
+                if (clipids == null || clipids.length == 0) {
+                    res.send();
+                }
+                var count = 0;
+                var results = [];
+                for (var i = 0; i < clipids.length; i++) {
+                    var clipscollection = db.collection('clips');
+                    var clipid = clipids[i].toString();
+                    clipscollection.findOne({clipid: clipid}, function(err, clipdata) {
+                        getClipImageUrl(clipid, clipdata, function(imageUrl){
+                            clipscollection.update({clipid: clipid}, {$set: {imageurl: imageUrl}}, function(err, results){
+                                if (err) {
+                                    db.close();
+                                    res.send();
+                                }
+                                count++;
+                                if (count == clipids.length) {
+                                    db.close();
+                                    res.send();
+                                };
+                            });
+                        });
+                    });
+                }
+            }
+        });
+    });
+}
+
 exports.getpopularclips = function(req, res) {
     MongoClient.connect(config.MONGO_URL, function(err, db) {
         var clipscollection = db.collection('clips');
